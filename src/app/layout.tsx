@@ -27,7 +27,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Resolved at SSR; fail loudly when the env var is missing so the
+  // misconfiguration surfaces during boot rather than at the first SDK call.
   const appId = process.env.EAZO_APP_ID;
+  if (!appId) {
+    throw new Error(
+      "EAZO_APP_ID is not set. Add it to .env.local — every Eazo app must declare its app id.",
+    );
+  }
   return (
     <html lang="en" className={cn("h-full antialiased", "font-sans", geist.variable)}>
       <body className="min-h-full flex flex-col">
