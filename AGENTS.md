@@ -98,7 +98,7 @@ The platform exposes capabilities through `@eazo/sdk`. Most capabilities (`auth`
 
 ### 5.1 React Provider
 
-Mount `EazoProvider` once at the root layout. Also mount `UserSyncEffect` inside the provider — it is a zero-render component that upserts the authenticated user to the local DB after every login (both Web and Mobile paths converge through `GET /api/user/profile`):
+Mount `EazoProvider` once at the root layout. Also mount `UserSyncEffect` inside the provider — it upserts the authenticated user to the local DB after every login (Web and Mobile both converge through `GET /api/user/profile`):
 
 ```tsx
 // src/app/layout.tsx
@@ -131,11 +131,10 @@ import { useEazo } from "@eazo/sdk/react";
 const user = useEazo((s) => s.auth.user);
 
 // Outside render (event handler / effect) — direct call
-<button onClick={() => auth.loginWithSocial("google")}>Sign in</button>
+<button onClick={() => auth.login()}>Sign in</button>
 ```
 
 **Rule**: inside render, read reactive state via `useEazo(selector)`. Outside render (event handlers, effects, non-React code), use `auth.xxx` / `device.xxx` directly.
-
 
 ### 5.2 `auth`
 
@@ -248,9 +247,9 @@ import { device } from "@eazo/sdk";
 
 device.platform      // 'web' | 'mobile'
 device.locale        // 'zh-CN' | ...
-device.safeArea      // { top, bottom }
-device.backendUrl    // platform backend URL
 ```
+
+For safe-area handling, use the standard CSS — `env(safe-area-inset-top)` / `env(safe-area-inset-bottom)` and `100dvh` for full-height layouts. The Eazo Mobile WebView advertises the correct insets to the browser, so the same CSS works edge-to-edge in both contexts.
 
 ### 5.4 `ai` — Server-side AI (AWS Bedrock via bedrock-mantle)
 
@@ -447,7 +446,7 @@ Client component  →  fetch("/api/my-feature/...")  →  API route handler  →
 
 `memory.reportAction()` writes a user action event to the Gum memory service — a persistent, semantically searchable log of what users did in your app. Gum stores events server-side and makes them available for AI context retrieval in later sessions.
 
-**Client-side only.** Call it from `"use client"` components or client-side helpers. It uses the same `NEXT_PUBLIC_EAZO_APP_ID` and session as `auth` — no extra configuration required.
+**Client-side only.** Call it from `"use client"` components or client-side helpers. It uses the same `appId` and session as `auth` — no extra configuration required.
 
 ```ts
 import { memory } from "@eazo/sdk";
@@ -472,7 +471,7 @@ memory.reportAction({
 | `content` | `string` (required) | Readable, full-sentence description of the event. Good: `"User clicked the publish button on the editor page"`. Bad: `"click"`. |
 | `event_type` | `string` | Action category, e.g. `"create"`, `"update"`, `"delete"`, `"click"`, `"search"`. |
 | `page` | `string` | Page or screen identifier, e.g. `"todo_list"`, `"editor"`, `"settings"`. |
-| `metadata` | `Record<string, unknown>` | Structured event data. Must include `appid` (auto-injected from `NEXT_PUBLIC_EAZO_APP_ID` when omitted). Include a `type` field matching `event_type` and the relevant business objects. |
+| `metadata` | `Record<string, unknown>` | Structured event data. `appid` is auto-injected by the SDK. Include a `type` field matching `event_type` and the relevant business objects. |
 | `session_id` | `string` | Associate the event with a Gum session for conversational memory. |
 | `device_id` | `string` | Device identifier. |
 | `app` | `string` | App name / identifier. |
@@ -503,7 +502,7 @@ metadata: {
 }
 ```
 
-`metadata.appid` is automatically injected by the SDK from `NEXT_PUBLIC_EAZO_APP_ID`. Do not set it manually.
+`metadata.appid` is automatically injected by the SDK. Do not set it manually.
 
 **The fire-and-forget pattern:**
 
@@ -565,7 +564,7 @@ The template wires this via `src/components/notifications/notifications-toggle.t
 import { notifications, EazoNotificationPublishError } from "@eazo/sdk/server";
 
 await notifications.publish({
-  appId: process.env.NEXT_PUBLIC_EAZO_APP_ID!,
+  appId: process.env.EAZO_APP_ID!,
   title: "Daily reminder",
   body: "Don't forget to review your tasks today.",
   data: { source: "cron-daily-digest" },     // forwarded to the device tap handler
@@ -726,14 +725,13 @@ src/app/api/mcp/
 
 | Variable | Required | Description |
 |---|---|---|
-| `EAZO_PRIVATE_KEY` | Yes (server) | Hex-encoded 64-char private key; used by `requireAuth` to decrypt sessions and by `notifications.publish` to sign JWTs |
-| `NEXT_PUBLIC_EAZO_APP_ID` | Yes (browser + server) | Eazo app ID; used when exchanging a GenAuth JWT for a session token, and as the `appId` arg for `notifications.publish` |
-| `CRON_SECRET` | Yes if you ship the daily-digest cron | Shared secret Vercel Cron sends as `Authorization: Bearer …` when firing scheduled invocations |
-| `NEXT_PUBLIC_EAZO_API_URL` | Optional | Eazo platform backend URL exposed via `device.backendUrl` (web fallback) |
-| `EAZO_API_BASE` | Optional | Server-side override of the platform base URL for `notifications.publish` (defaults to `NEXT_PUBLIC_EAZO_API_URL` then `https://eazo.ai`) |
+| `EAZO_APP_ID` | Yes | Eazo app ID. Also passed as the `appId` arg to `notifications.publish` server-side. |
+| `EAZO_PRIVATE_KEY` | Yes | Hex-encoded 64-char private key; used by `requireAuth` to decrypt sessions and by `notifications.publish` to sign JWTs. |
 | `DATABASE_URL` | If using DB | `postgresql://USER:PASS@HOST:PORT/DATABASE` |
-| `NEXT_PUBLIC_GENAUTH_APP_ID` | Optional | Override GenAuth App ID default |
-| `NEXT_PUBLIC_GENAUTH_APP_DOMAIN` | Optional | Override GenAuth tenant domain default |
+| `CRON_SECRET` | If you ship the daily-digest cron | Shared secret Vercel Cron sends as `Authorization: Bearer …` when firing scheduled invocations. |
+| `EAZO_PLATFORM_API_BASE` | Optional | Override the Eazo platform base URL (defaults to `https://eazo.ai`). |
+| `NEXT_PUBLIC_GENAUTH_APP_ID` | Optional | Override GenAuth App ID default. |
+| `NEXT_PUBLIC_GENAUTH_APP_DOMAIN` | Optional | Override GenAuth tenant domain default. |
 
 Copy `.env.example` to `.env` to configure locally.
 
@@ -779,9 +777,9 @@ Each URL maps to a `page.tsx` under `src/app/`. Extract non-trivial UI into `src
    ```
 3. **If the page needs a new API route** — add `src/app/api/<resource>/route.ts` and guard it with `requireAuth`.
 
-## 11. Coding Requirements
+## 12. Coding Requirements
 
-### 11.1 Component Encapsulation (mandatory)
+### 12.1 Component Encapsulation (mandatory)
 
 - **Never write all code in one file.** A `page.tsx` must remain a thin entry point — it imports one top-level feature component and renders it. Business logic, UI sections, and sub-components all live in separate files.
 - **One component per file — strictly enforced.** Each file must export exactly one component. No exceptions: even small helper components must have their own file. If you find yourself writing a second component in the same file, stop and split immediately.
@@ -838,7 +836,7 @@ src/components/dashboard/
   activity-item.tsx
 ```
 
-### 11.2 File Size Limits
+### 12.2 File Size Limits
 
 | File type | Soft limit | Hard limit |
 |---|---|---|
@@ -849,20 +847,20 @@ src/components/dashboard/
 
 When a file approaches its hard limit, split it before continuing.
 
-### 11.3 Naming Conventions
+### 12.3 Naming Conventions
 
 - Component files: `kebab-case.tsx` (e.g. `user-profile-card.tsx`)
 - Component exports: `PascalCase` named export (e.g. `export function UserProfileCard`)
 - Each feature folder exposes a barrel `index.tsx` that re-exports the top-level component.
 - API helpers: `camelCase` functions in `src/lib/api/<resource>.ts`.
 
-### 11.4 State and Data
+### 12.4 State and Data
 
 - Do not fetch data directly inside a `page.tsx`. Delegate to a client component or a server component that lives in `src/components/`.
 - Read auth state with `useAuthStore((s) => s.user)` — do not re-fetch profile inside individual components.
 - Keep Zustand stores in `src/stores/`. Do not create ad-hoc `useState` sprawl across multiple files for shared state.
 
-### 11.5 API Requests (mandatory)
+### 12.5 API Requests (mandatory)
 
 - **All API call logic must live in `src/lib/api/`.** Never call `fetch` or `request()` directly inside a page or component file.
 - Group by resource: `src/lib/api/todos.ts`, `src/lib/api/projects.ts`, etc. Each file exports typed async functions for that resource's CRUD operations.
@@ -879,16 +877,16 @@ const res = await request("/api/todos");
 - API functions must be fully typed: explicit parameter types and return types (no implicit `any`).
 - Error handling belongs in the API layer, not scattered across components.
 
-### 11.6 Imports
+### 12.6 Imports
 
 - Use `@/` path aliases everywhere — no relative `../../` chains.
 - Import UI primitives from `@/components/ui/`, not directly from shadcn source paths.
 
-## 12. Project Rules
+## 13. Project Rules
 
 - Prefer Bun for all install and script commands.
 - Keep the template lean and framework-native.
-- Do not reach into `@eazo/sdk` internals. The public surface is `auth`, `device`, `ai`, `storage`, `memory`, `useEazo`, `EazoProvider`, `requireAuth`, and semantic types.
+- Do not reach into `@eazo/sdk` internals. The public surface is `auth`, `device`, `ai`, `storage`, `memory`, `notifications`, `useEazo`, `EazoProvider`, `requireAuth`, and semantic types.
 - **`ai` must only be called inside `src/app/api/` route handlers — never in client components, hooks, or `src/lib/api/` helpers.**
 - **Call `memory.reportAction()` (fire-and-forget) after every meaningful user mutation.** Always chain `.catch(() => {})` — Gum failures must never break core user flows. Do not call it for read-only fetches or inside server-side route handlers.
 - Keep demo code out of new product code.
@@ -896,6 +894,6 @@ const res = await request("/api/todos");
 - Before starting feature development, run `bun run cleanup:demo` to remove all demo/example artifacts (TodoList pages/components, demo API routes, demo DB schema/migrations) and auto-clean stale `./todos` exports in index files.
 - Before shipping, run `bun run lint` and `bun run build`.
 
-## 13. Goal
+## 14. Goal
 
 Start fast, stay flexible, and only add complexity when there is a concrete product requirement.
