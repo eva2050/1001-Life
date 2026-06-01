@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@eazo/sdk"],
   // RFC1918 LAN ranges + localhost for `next dev` HMR over Wi-Fi.
   allowedDevOrigins: [
+    "*.e2b.app",
     "localhost",
     "127.0.0.1",
     "192.168.*.*",
