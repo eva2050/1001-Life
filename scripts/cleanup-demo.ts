@@ -186,6 +186,22 @@ const CLEAN_LOCALE_EN = {
     enUS: "English",
     zhCN: "中文",
   },
+  errors: {
+    notFound: {
+      code: "404",
+      title: "Page not found",
+      description:
+        "The page you're looking for doesn't exist or may have been moved.",
+      backHome: "Back to home",
+    },
+    generic: {
+      title: "Something went wrong",
+      description:
+        "An unexpected error occurred. You can try again or return to the home page.",
+      tryAgain: "Try again",
+      backHome: "Back to home",
+    },
+  },
   starter: {
     badge: "Eazo App Starter",
     title: "Build your next app with Eazo",
@@ -246,6 +262,20 @@ const CLEAN_LOCALE_ZH = {
     followSystemWithLanguage: "跟随系统（{{language}}）",
     enUS: "English",
     zhCN: "中文",
+  },
+  errors: {
+    notFound: {
+      code: "404",
+      title: "页面未找到",
+      description: "你访问的页面不存在，或已被移动。",
+      backHome: "返回首页",
+    },
+    generic: {
+      title: "出了点问题",
+      description: "发生了意外错误。你可以重试，或返回首页继续。",
+      tryAgain: "重试",
+      backHome: "返回首页",
+    },
   },
   starter: {
     badge: "Eazo 应用模板",
