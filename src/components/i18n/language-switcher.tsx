@@ -1,5 +1,7 @@
 "use client";
 
+/** Reference locale control — restyle or fork for your app's header/settings UI. Keep changeLocale() wiring. */
+
 import { useEffect, useState } from "react";
 import { Languages } from "lucide-react";
 import { useTranslation } from "react-i18next";

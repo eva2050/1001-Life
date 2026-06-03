@@ -260,7 +260,12 @@ App-only **react-i18next** (SDK login/banner UI stays English). Locales `en-US`,
 
 - `<I18nProvider>` wraps `<EazoProvider>` in `src/app/layout.tsx`
 - `LocaleSyncEffect` follows `device.locale` when preference is `system`
-- `LanguageSwitcher` → `changeLocale()` from `@/i18n`
+- `LanguageSwitcher` → `changeLocale()` from `@/i18n` (reference wiring only)
+
+**Language control UI**
+
+- `src/components/i18n/language-switcher.tsx` demonstrates locale preference + `changeLocale()`. When building a product app, **restyle or replace** it so the control matches your header, settings, or nav (tokens, typography, shape). Do not ship the default rounded pill unchanged if it clashes with your design.
+- You may fork into `src/components/<feature>/locale-control.tsx` (one component per file) while reusing imports from `@/i18n`.
 
 **Adding copy**
 
