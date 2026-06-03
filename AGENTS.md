@@ -763,6 +763,12 @@ Copy `.env.example` to `.env` to configure locally.
 
 ## 10. UI Components
 
+### 10.1 `globals.css` @import order (build-breaking)
+
+- **All `@import` lines must be at the top** of `src/app/globals.css`, before `@custom-variant`, `@theme`, `:root`, `@property`, `@keyframes`, and other rules. Later `@import` causes PostCSS error: `@import rules must precede all rules aside from @charset and @layer statements`.
+- Typical order: `@import "tailwindcss";` → optional `tw-animate-css` / `shadcn/tailwind.css` → then theme tokens. **Never** add `@import` again at the bottom of the file.
+- **Do not** use `@import url('https://fonts.googleapis.com/...')`. Load fonts with **`next/font/google`** in `src/app/layout.tsx` and reference `variable: "--font-body"` / `--font-heading` in `@theme`.
+
 shadcn/ui is initialized. Available from `@/components/ui/`:
 
 | Component | Import |
