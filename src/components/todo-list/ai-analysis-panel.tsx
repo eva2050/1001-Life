@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { getResolvedLocale } from "@/i18n";
 import { Sparkles, X, Loader2 } from "lucide-react";
 import { auth } from "@eazo/sdk";
 
@@ -10,6 +12,7 @@ interface AiAnalysisPanelProps {
 }
 
 export function AiAnalysisPanel({ todoCount, onClose }: AiAnalysisPanelProps) {
+  const { t } = useTranslation();
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,17 +30,20 @@ export function AiAnalysisPanel({ todoCount, onClose }: AiAnalysisPanelProps) {
         const sessionHeader = await auth.getSessionHeader();
         const res = await fetch("/api/todos/analyze", {
           method: "POST",
-          headers: sessionHeader ? { "x-eazo-session": sessionHeader } : {},
+          headers: {
+            ...(sessionHeader ? { "x-eazo-session": sessionHeader } : {}),
+            "x-app-locale": getResolvedLocale(),
+          },
           signal: controller.signal,
         });
 
         if (!res.ok) {
-          const msg = await res.text().catch(() => "Request failed");
+          const msg = await res.text().catch(() => t("ai.requestFailed"));
           throw new Error(msg || `HTTP ${res.status}`);
         }
 
         const reader = res.body?.getReader();
-        if (!reader) throw new Error("No response body");
+        if (!reader) throw new Error(t("ai.noResponseBody"));
 
         const decoder = new TextDecoder();
         while (true) {
@@ -51,7 +57,7 @@ export function AiAnalysisPanel({ todoCount, onClose }: AiAnalysisPanelProps) {
         }
       } catch (err: any) {
         if (err?.name !== "AbortError") {
-          setError(err?.message ?? "Failed to analyze todos");
+          setError(err?.message ?? t("ai.analyzeFailed"));
         }
       } finally {
         setLoading(false);
@@ -71,12 +77,12 @@ export function AiAnalysisPanel({ todoCount, onClose }: AiAnalysisPanelProps) {
           <div className="flex h-6 w-6 items-center justify-center rounded-[8px] bg-[linear-gradient(180deg,#F47A42_0%,#EE5C2A_100%)]">
             <Sparkles className="h-3.5 w-3.5 text-white" />
           </div>
-          <span className="text-[13px] font-semibold text-slate-950/80">AI Analysis</span>
+          <span className="text-[13px] font-semibold text-slate-950/80">{t("ai.title")}</span>
           {loading && <Loader2 className="h-3.5 w-3.5 animate-spin text-[#EE5C2A]" />}
         </div>
         <button
           onClick={onClose}
-          aria-label="Close"
+          aria-label={t("common.close")}
           className="flex h-6 w-6 items-center justify-center rounded-[8px] text-slate-950/35 transition-colors hover:bg-white/80 hover:text-slate-950/72"
         >
           <X className="h-3.5 w-3.5" />
@@ -97,7 +103,7 @@ export function AiAnalysisPanel({ todoCount, onClose }: AiAnalysisPanelProps) {
         ) : (
           <div className="flex items-center gap-2 text-[13px] text-slate-950/40">
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            <span>Analyzing your todos…</span>
+            <span>{t("ai.analyzing")}</span>
           </div>
         )}
       </div>

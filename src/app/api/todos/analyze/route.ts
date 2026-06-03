@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getTodos } from "@/lib/db/queries";
 import { requireAuth } from "@/lib/auth";
 import { ai } from "@eazo/sdk";
+import { getRequestLocale } from "@/lib/i18n/server-locale";
 
 ai.configure({ privateKey: process.env.EAZO_PRIVATE_KEY! });
 
@@ -12,6 +13,7 @@ export async function POST(request: NextRequest) {
   if (!auth.ok) return auth.response;
 
   const todos = await getTodos(auth.user.id);
+  const locale = getRequestLocale(request);
 
   const done = todos.filter((t) => t.completed);
   const pending = todos.filter((t) => !t.completed);
@@ -29,18 +31,21 @@ export async function POST(request: NextRequest) {
     .join("\n")
     .trim();
 
+  const systemPrompt =
+    locale === "zh-CN"
+      ? "你是一位高效的生产力教练。请分析用户的待办清单，给出简洁、可执行的建议。语气积极、务实，控制在 3-5 个短段落内。使用纯文本，不要使用 Markdown。"
+      : "You are a helpful productivity coach. Analyze the user's todo list and provide concise, actionable insights. Be encouraging, practical, and brief (3-5 short paragraphs max). Use plain text, no markdown.";
+
+  const userPrompt =
+    locale === "zh-CN"
+      ? `以下是我当前的待办清单：\n\n${todoSummary}\n\n请分析我的效率、优先级，并给出下一步建议。`
+      : `Here is my current todo list:\n\n${todoSummary}\n\nPlease analyze it and give me insights on my productivity, priorities, and suggestions for what to focus on next.`;
+
   const stream = await ai.chat({
     model: "deepseek.v3.1",
     messages: [
-      {
-        role: "system",
-        content:
-          "You are a helpful productivity coach. Analyze the user's todo list and provide concise, actionable insights. Be encouraging, practical, and brief (3-5 short paragraphs max). Use plain text, no markdown.",
-      },
-      {
-        role: "user",
-        content: `Here is my current todo list:\n\n${todoSummary}\n\nPlease analyze it and give me insights on my productivity, priorities, and suggestions for what to focus on next.`,
-      },
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
     ],
     stream: true,
     max_tokens: 512,

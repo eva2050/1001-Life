@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Trash2, Pencil, Check, X, Plus, Loader2, Paperclip, ImageOff, Share2 } from "lucide-react";
 import Image from "next/image";
 import { share } from "@eazo/sdk";
@@ -24,6 +25,7 @@ export function TodoItem({
   onAttach,
   onRemoveAttachment,
 }: TodoItemProps) {
+  const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(todo.title);
   const [busy, setBusy] = useState(false);
@@ -88,21 +90,21 @@ export function TodoItem({
     setSharing(true);
     try {
       const text = todo.completed
-        ? `Just finished: ${todo.title}`
-        : `Working on: ${todo.title}`;
+        ? t("todo.shareJustFinished", { title: todo.title })
+        : t("todo.shareWorkingOn", { title: todo.title });
       const attachments = todo.attachmentUrl
         ? [
             {
               type: "image" as const,
               url: todo.attachmentUrl,
-              caption: "todo attachment",
+              caption: t("todo.shareAttachmentCaption"),
             },
           ]
         : undefined;
       const { accepted } = await share.compose({ text, attachments });
-      if (accepted) toast.success("Opened in Eazo");
+      if (accepted) toast.success(t("todo.shareOpenedInEazo"));
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Share failed";
+      const message = err instanceof Error ? err.message : t("todo.shareFailed");
       toast.error(message);
     } finally {
       setSharing(false);
@@ -119,7 +121,7 @@ export function TodoItem({
         <button
           onClick={handleToggle}
           disabled={isDisabled}
-          aria-label={todo.completed ? "Mark incomplete" : "Mark complete"}
+          aria-label={todo.completed ? t("todo.markIncomplete") : t("todo.markComplete")}
           className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 border-slate-950/25 transition-all duration-200 hover:border-[#EE5C2A]/60 disabled:opacity-40"
           style={
             todo.completed
@@ -159,7 +161,7 @@ export function TodoItem({
               <button
                 onClick={handleSave}
                 disabled={isDisabled}
-                aria-label="Save"
+                aria-label={t("common.save")}
                 className="flex h-7 w-7 items-center justify-center rounded-[8px] text-slate-950/45 transition-colors hover:bg-white/80 hover:text-[#EE5C2A] disabled:opacity-40"
               >
                 {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
@@ -167,7 +169,7 @@ export function TodoItem({
               <button
                 onClick={handleCancel}
                 disabled={isDisabled}
-                aria-label="Cancel"
+                aria-label={t("common.cancel")}
                 className="flex h-7 w-7 items-center justify-center rounded-[8px] text-slate-950/45 transition-colors hover:bg-white/80 hover:text-slate-950/72 disabled:opacity-40"
               >
                 <X className="h-3.5 w-3.5" />
@@ -179,7 +181,7 @@ export function TodoItem({
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isDisabled}
-                aria-label="Attach image"
+                aria-label={t("todo.attachImage")}
                 className="flex h-7 w-7 items-center justify-center rounded-[8px] text-slate-950/35 opacity-100 transition-all duration-150 hover:bg-white/80 hover:text-[#EE5C2A] disabled:opacity-40 sm:opacity-0 sm:group-hover:opacity-100"
               >
                 {uploading ? (
@@ -200,7 +202,7 @@ export function TodoItem({
               <button
                 onClick={handleShare}
                 disabled={isDisabled}
-                aria-label="Share to Eazo"
+                aria-label={t("todo.shareToEazo")}
                 className="flex h-7 w-7 items-center justify-center rounded-[8px] text-slate-950/35 opacity-100 transition-all duration-150 hover:bg-white/80 hover:text-[#EE5C2A] disabled:opacity-40 sm:opacity-0 sm:group-hover:opacity-100"
               >
                 {sharing ? (
@@ -213,7 +215,7 @@ export function TodoItem({
               <button
                 onClick={() => { setDraft(todo.title); setEditing(true); }}
                 disabled={isDisabled}
-                aria-label="Edit"
+                aria-label={t("common.edit")}
                 className="flex h-7 w-7 items-center justify-center rounded-[8px] text-slate-950/35 opacity-100 transition-all duration-150 hover:bg-white/80 hover:text-slate-950/72 sm:opacity-0 sm:group-hover:opacity-100"
               >
                 <Pencil className="h-3.5 w-3.5" />
@@ -221,7 +223,7 @@ export function TodoItem({
               <button
                 onClick={handleDelete}
                 disabled={isDisabled}
-                aria-label="Delete"
+                aria-label={t("common.delete")}
                 className="flex h-7 w-7 items-center justify-center rounded-[8px] text-slate-950/35 opacity-100 transition-all duration-150 hover:bg-red-50 hover:text-red-500 sm:opacity-0 sm:group-hover:opacity-100"
               >
                 {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
@@ -237,7 +239,7 @@ export function TodoItem({
           <div className="group/img relative overflow-hidden rounded-[10px] border border-white/70 shadow-[0_4px_12px_rgba(15,23,42,0.09)]">
             <Image
               src={todo.attachmentUrl}
-              alt="attachment"
+              alt={t("todo.attachmentAlt")}
               width={160}
               height={120}
               className="block h-[100px] w-[140px] object-cover"
@@ -247,7 +249,7 @@ export function TodoItem({
             <button
               onClick={handleRemoveAttachment}
               disabled={isDisabled}
-              aria-label="Remove attachment"
+              aria-label={t("todo.removeAttachment")}
               className="absolute inset-0 flex items-center justify-center rounded-[10px] bg-slate-950/0 opacity-0 transition-all duration-200 group-hover/img:bg-slate-950/30 group-hover/img:opacity-100 disabled:cursor-not-allowed"
             >
               <ImageOff className="h-4 w-4 text-white drop-shadow" />
@@ -260,7 +262,7 @@ export function TodoItem({
       {uploading && (
         <div className="mt-2 ml-8 flex items-center gap-1.5 text-[12px] text-slate-950/45">
           <Loader2 className="h-3 w-3 animate-spin" />
-          <span>Uploading…</span>
+          <span>{t("todo.uploading")}</span>
         </div>
       )}
     </div>
@@ -272,6 +274,7 @@ interface AddTodoFormProps {
 }
 
 export function AddTodoForm({ onAdd }: AddTodoFormProps) {
+  const { t } = useTranslation();
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -288,7 +291,7 @@ export function AddTodoForm({ onAdd }: AddTodoFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex gap-2">
       <input
-        placeholder="Add a new todo…"
+        placeholder={t("todo.addPlaceholder")}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         disabled={loading}

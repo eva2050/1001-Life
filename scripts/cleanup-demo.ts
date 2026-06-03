@@ -5,6 +5,7 @@ const ROOT = process.cwd();
 
 const demoTargets = [
   "src/components/todo-list",
+  "src/components/notifications",
   "src/app/api/todos",
   "src/lib/api/todos.ts",
   "src/lib/db/schema/todos.ts",
@@ -36,6 +37,7 @@ export function buildMcpServer(_userId: string): McpServer {
 `;
 
 const CLEAN_HOME_PAGE = `import { UserBadge } from "@/components/user-profile/user-badge";
+import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 
 export default function Home() {
   const nextSteps = [
@@ -54,6 +56,11 @@ export default function Home() {
       desc: "Add API routes under src/app/api and call them from typed helpers.",
       code: "src/app/api/*",
     },
+    {
+      title: "Add translations",
+      desc: "Edit en-US / zh-CN strings in src/i18n/locales. LanguageSwitcher and I18nProvider in layout.tsx are already wired.",
+      code: "src/i18n/locales/",
+    },
   ];
 
   return (
@@ -63,7 +70,8 @@ export default function Home() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,theme(colors.orange.500/0.18),transparent_50%)]"
       />
 
-      <header className="absolute right-4 top-4 z-10">
+      <header className="absolute right-4 top-4 z-10 flex items-center gap-2">
+        <LanguageSwitcher />
         <UserBadge />
       </header>
 
@@ -152,12 +160,76 @@ export async function POST(request: NextRequest) {
 }
 `;
 
+const CLEAN_LOCALE_EN = {
+  metadata: {
+    title: "Eazo App",
+    description: "Built with the Eazo Next.js template.",
+  },
+  common: {
+    signIn: "Sign in",
+    signOut: "Sign out",
+    loading: "Loading…",
+    on: "On",
+    off: "Off",
+    close: "Close",
+    save: "Save",
+    cancel: "Cancel",
+    edit: "Edit",
+    delete: "Delete",
+    userId: "User ID",
+  },
+  language: {
+    label: "Language",
+    triggerLabel: "Language: {{language}}",
+    followSystem: "System",
+    followSystemWithLanguage: "System ({{language}})",
+    enUS: "English",
+    zhCN: "中文",
+  },
+} as const;
+
+const CLEAN_LOCALE_ZH = {
+  metadata: {
+    title: "Eazo 应用",
+    description: "基于 Eazo Next.js 模板构建。",
+  },
+  common: {
+    signIn: "登录",
+    signOut: "退出登录",
+    loading: "加载中…",
+    on: "开",
+    off: "关",
+    close: "关闭",
+    save: "保存",
+    cancel: "取消",
+    edit: "编辑",
+    delete: "删除",
+    userId: "用户 ID",
+  },
+  language: {
+    label: "语言",
+    triggerLabel: "语言：{{language}}",
+    followSystem: "跟随系统",
+    followSystemWithLanguage: "跟随系统（{{language}}）",
+    enUS: "English",
+    zhCN: "中文",
+  },
+} as const;
+
 const fileRewrites: Array<{ relPath: string; contents: string }> = [
   { relPath: "src/lib/mcp/server.ts", contents: CLEAN_MCP_SERVER },
   { relPath: "src/app/page.tsx", contents: CLEAN_HOME_PAGE },
   {
     relPath: "src/app/api/notifications/test/route.ts",
     contents: CLEAN_NOTIFICATIONS_TEST_ROUTE,
+  },
+  {
+    relPath: "src/i18n/locales/en-US.json",
+    contents: `${JSON.stringify(CLEAN_LOCALE_EN, null, 2)}\n`,
+  },
+  {
+    relPath: "src/i18n/locales/zh-CN.json",
+    contents: `${JSON.stringify(CLEAN_LOCALE_ZH, null, 2)}\n`,
   },
 ];
 

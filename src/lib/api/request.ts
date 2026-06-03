@@ -1,4 +1,5 @@
 import { auth } from "@eazo/sdk";
+import { getResolvedLocale } from "@/i18n";
 
 /**
  * Drop-in replacement for `fetch` that automatically injects `x-eazo-session`.
@@ -16,6 +17,7 @@ export async function request(
     headers: {
       ...init.headers,
       ...(sessionHeader ? { "x-eazo-session": sessionHeader } : {}),
+      "x-app-locale": getResolvedLocale(),
     },
   });
 }

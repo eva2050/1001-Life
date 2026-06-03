@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Bell, BellOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { auth, notifications } from "@eazo/sdk";
@@ -10,6 +11,7 @@ import { request } from "@/lib/api/request";
 
 /** Subscribe toggle + "Send test" button shown above the todo list. */
 export function NotificationsToggle() {
+  const { t } = useTranslation();
   const user = useEazo((s) => s.auth.user);
   const platform = useEazo((s) => s.device.platform);
   const isMobileHost = platform === "mobile";
@@ -50,16 +52,16 @@ export function NotificationsToggle() {
         : await notifications.unsubscribe();
       setSubscribed(result.subscribed);
       if (!isMobileHost) {
-        toast.info("Notifications only deliver inside the Eazo mobile app.");
+        toast.info(t("notifications.webOnlyToast"));
       } else if (result.subscribed) {
-        toast.success("Subscribed — you'll receive system notifications.");
+        toast.success(t("notifications.subscribedToast"));
       } else {
-        toast.success("Unsubscribed.");
+        toast.success(t("notifications.unsubscribedToast"));
       }
     } catch (err) {
       console.error("[notifications] toggle failed", err);
       setSubscribed(!wantOn); // revert
-      toast.error("Couldn't update subscription. Try again.");
+      toast.error(t("notifications.toggleFailed"));
     } finally {
       setToggling(false);
     }
@@ -71,9 +73,7 @@ export function NotificationsToggle() {
     try {
       const sessionHeader = await auth.getSessionHeader();
       if (!sessionHeader) {
-        toast.error(
-          "Session not ready yet — please sign in again and retry.",
-        );
+        toast.error(t("notifications.sessionNotReady"));
         console.warn(
           "[notifications] test publish skipped: auth.getSessionHeader() returned null",
         );
@@ -97,26 +97,22 @@ export function NotificationsToggle() {
           status: res.status,
           body,
         });
-        toast.error(`Test failed: ${message}`);
+        toast.error(t("notifications.testFailed", { message }));
         return;
       }
 
       const data = body as { delivered: number; publishId: string };
       if (data.delivered > 0) {
-        toast.success(
-          `Sent! Delivered to ${data.delivered} subscriber${
-            data.delivered === 1 ? "" : "s"
-          }.`,
-        );
+        toast.success(t("notifications.sent", { count: data.delivered }));
       } else {
-        toast.info(
-          "No subscribers yet — turn on notifications above and try again.",
-        );
+        toast.info(t("notifications.noSubscribers"));
       }
     } catch (err) {
       console.error("[notifications] test publish unexpected error", err);
       toast.error(
-        err instanceof Error ? `Test failed: ${err.message}` : "Test failed.",
+        err instanceof Error
+          ? t("notifications.testFailed", { message: err.message })
+          : t("notifications.testFailedGeneric"),
       );
     } finally {
       setSending(false);
@@ -137,16 +133,16 @@ export function NotificationsToggle() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-semibold text-slate-950/80">
-            Push notifications
+            {t("notifications.title")}
           </p>
           <p className="text-[12px] text-slate-950/45">
             {showHint
-              ? "Open this app inside Eazo Mobile to receive system pushes."
+              ? t("notifications.webHint")
               : subscribed === null
-                ? "Loading…"
+                ? t("notifications.loading")
                 : subscribed
-                  ? "On — you'll receive system pushes from this app."
-                  : "Off — turn on to receive system pushes."}
+                  ? t("notifications.subscribed")
+                  : t("notifications.unsubscribed")}
           </p>
         </div>
         <button
@@ -161,9 +157,9 @@ export function NotificationsToggle() {
           {toggling ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : subscribed ? (
-            "On"
+            t("common.on")
           ) : (
-            "Off"
+            t("common.off")
           )}
         </button>
       </div>
@@ -172,7 +168,7 @@ export function NotificationsToggle() {
         disabled={sending}
         className="self-end h-7 rounded-[8px] border border-white/70 bg-white/72 px-3 text-[11px] font-semibold text-slate-950/55 shadow-[0_2px_6px_rgba(15,23,42,0.05)] transition-colors hover:bg-white/86 hover:text-[#EE5C2A] disabled:opacity-50"
       >
-        {sending ? "Sending…" : "Send test notification"}
+        {sending ? t("notifications.sending") : t("notifications.sendTest")}
       </button>
     </div>
   );

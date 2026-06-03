@@ -12,6 +12,7 @@ This repository is a Bun-first, minimal Next.js starter for building apps that r
 - `@eazo/sdk` — capability-first SDK: `auth`, `device`, `ai`, `storage`, `memory`, `notifications`, React integration, server-side `requireAuth` + `notifications.publish`; bundles GenAuth login + ECC/AES session decryption internally; `ai` routes through AWS Bedrock via the Eazo AI gateway; `memory` records user actions as persistent, semantically searchable memory for AI context retrieval; `notifications` opts users into per-app system push and lets the server fan out notifications to subscribers
 - shadcn/ui, lucide-react, framer-motion
 - Drizzle ORM (PostgreSQL via `drizzle-orm` + `postgres.js`)
+- `i18next` + `react-i18next` — `en-US` / `zh-CN` UI (same stack as Eazo Creator frontend); auto-detect via system / browser / `@eazo/sdk` `device.locale`; manual switch via `LanguageSwitcher`
 
 ## 2. Use This Template
 
@@ -25,7 +26,7 @@ This repository is a Bun-first, minimal Next.js starter for building apps that r
    - **Memory** — `src/components/todo-list/index.tsx` (fire-and-forget `memory.reportAction()` pattern after each mutation)
    - **Notifications** — `src/components/notifications/notifications-toggle.tsx`, `src/app/api/notifications/test/route.ts`, `src/app/api/notifications/cron/daily-digest/route.ts`, `vercel.json#crons`
 4. Run `bun run cleanup:demo` before any feature development to remove all template demo artifacts.
-5. Update app metadata in `src/app/layout.tsx`.
+5. Update app metadata in `src/app/layout.tsx` and `metadata.*` keys in `src/i18n/locales/*.json`.
 6. Replace the default content in `src/app/page.tsx`.
 7. Add product-specific routes, components, and data logic from there.
 
@@ -250,6 +251,26 @@ device.locale        // 'zh-CN' | ...
 ```
 
 For safe-area handling, use the standard CSS — `env(safe-area-inset-top)` / `env(safe-area-inset-bottom)` and `100dvh` for full-height layouts. The Eazo Mobile WebView advertises the correct insets to the browser, so the same CSS works edge-to-edge in both contexts.
+
+### 5.3.1 Internationalization (`react-i18next`)
+
+App-only **react-i18next** (SDK login/banner UI stays English). Locales `en-US`, `zh-CN`; preference in `localStorage` key `eazo-app.locale.v1` (`system` | `en-US` | `zh-CN`).
+
+**Detection**
+
+- `<I18nProvider>` wraps `<EazoProvider>` in `src/app/layout.tsx`
+- `LocaleSyncEffect` follows `device.locale` when preference is `system`
+- `LanguageSwitcher` → `changeLocale()` from `@/i18n`
+
+**Adding copy**
+
+- Edit `src/i18n/locales/en-US.json` and `zh-CN.json`
+- Client: `const { t } = useTranslation()` → `t('todo.title')`
+
+**Server / API**
+
+- `request()` sends `x-app-locale` via `getResolvedLocale()` from `@/i18n`
+- Route handlers: `getRequestLocale(request)` in `src/lib/i18n/server-locale.ts`
 
 ### 5.4 `ai` — Server-side AI (AWS Bedrock via bedrock-mantle)
 
@@ -891,7 +912,7 @@ const res = await request("/api/todos");
 - **Call `memory.reportAction()` (fire-and-forget) after every meaningful user mutation.** Always chain `.catch(() => {})` — Gum failures must never break core user flows. Do not call it for read-only fetches or inside server-side route handlers.
 - Keep demo code out of new product code.
 - **Always maintain a local `users` table.** Every app must persist authenticated user info in its own database. The template's `users` schema and `upsertUser` query are the reference implementation — do not remove them. `GET /api/user/profile` upserts on every call (Web path); `UserSyncEffect` triggers the same upsert after a Mobile bridge login. If you add new user-facing features, join against the local `users` table rather than relying solely on the SDK session.
-- Before starting feature development, run `bun run cleanup:demo` to remove all demo/example artifacts (TodoList pages/components, demo API routes, demo DB schema/migrations) and auto-clean stale `./todos` exports in index files.
+- Before starting feature development, run `bun run cleanup:demo` to remove all demo/example artifacts (TodoList pages/components, notifications demo UI, demo API routes, demo DB schema/migrations), trim demo i18n keys in `src/i18n/locales/`, and auto-clean stale `./todos` exports in index files.
 - Before shipping, run `bun run lint` and `bun run build`.
 
 ## 14. Goal
