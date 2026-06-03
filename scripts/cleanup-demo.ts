@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const ROOT = process.cwd();
@@ -36,32 +36,31 @@ export function buildMcpServer(_userId: string): McpServer {
 }
 `;
 
-const CLEAN_HOME_PAGE = `import { UserBadge } from "@/components/user-profile/user-badge";
-import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+const CLEAN_HOME_PAGE = `import { HomePage } from "@/components/home";
 
 export default function Home() {
-  const nextSteps = [
-    {
-      title: "Read the docs",
-      desc: "Open AGENTS.md and README.md to understand the template architecture.",
-      code: "AGENTS.md + README.md",
-    },
-    {
-      title: "Replace this page",
-      desc: "Move your product UI into src/components and keep page.tsx thin.",
-      code: "src/app/page.tsx",
-    },
-    {
-      title: "Build your first feature",
-      desc: "Add API routes under src/app/api and call them from typed helpers.",
-      code: "src/app/api/*",
-    },
-    {
-      title: "Add translations",
-      desc: "Edit en-US / zh-CN strings in src/i18n/locales. LanguageSwitcher and I18nProvider in layout.tsx are already wired.",
-      code: "src/i18n/locales/",
-    },
-  ];
+  return <HomePage />;
+}
+`;
+
+const CLEAN_HOME_INDEX = `export { HomePage } from "./home-page";
+`;
+
+const CLEAN_HOME_PAGE_COMPONENT = `"use client";
+
+import { useTranslation } from "react-i18next";
+import { UserBadge } from "@/components/user-profile/user-badge";
+import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+
+const STEP_KEYS = [
+  "readDocs",
+  "replacePage",
+  "firstFeature",
+  "translations",
+] as const;
+
+export function HomePage() {
+  const { t } = useTranslation();
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
@@ -78,41 +77,42 @@ export default function Home() {
       <main className="relative z-10 mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center gap-10 px-6 py-20 md:px-10">
         <section className="space-y-4 text-center md:text-left">
           <span className="inline-flex rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1 text-xs font-medium text-orange-600 dark:text-orange-300">
-            Eazo App Starter
+            {t("starter.badge")}
           </span>
           <h1 className="text-4xl font-semibold tracking-tight text-balance md:text-5xl">
-            Build your next app with Eazo
+            {t("starter.title")}
           </h1>
           <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-            Demo artifacts are removed. You now have a clean foundation with auth,
-            data access, and platform integrations ready for your product.
+            {t("starter.subtitle")}
           </p>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          {nextSteps.map((step) => (
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {STEP_KEYS.map((key) => (
             <article
-              key={step.title}
+              key={key}
               className="rounded-2xl border bg-card/60 p-5 shadow-sm backdrop-blur"
             >
-              <h2 className="text-base font-medium">{step.title}</h2>
+              <h2 className="text-base font-medium">
+                {t(\`starter.steps.\${key}.title\`)}
+              </h2>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {step.desc}
+                {t(\`starter.steps.\${key}.desc\`)}
               </p>
               <code className="mt-4 inline-block rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">
-                {step.code}
+                {t(\`starter.steps.\${key}.code\`)}
               </code>
             </article>
           ))}
         </section>
 
         <section className="rounded-2xl border bg-card/50 p-5 md:p-6">
-          <h3 className="text-sm font-medium">Next command</h3>
+          <h3 className="text-sm font-medium">{t("starter.nextCommand.title")}</h3>
           <p className="mt-2 text-sm text-muted-foreground">
-            Start developing and iterate in real time.
+            {t("starter.nextCommand.desc")}
           </p>
           <pre className="mt-4 overflow-x-auto rounded-lg bg-muted p-3 text-sm">
-            <code>bun dev</code>
+            <code>{t("starter.nextCommand.command")}</code>
           </pre>
         </section>
       </main>
@@ -186,6 +186,39 @@ const CLEAN_LOCALE_EN = {
     enUS: "English",
     zhCN: "中文",
   },
+  starter: {
+    badge: "Eazo App Starter",
+    title: "Build your next app with Eazo",
+    subtitle:
+      "Demo artifacts are removed. You now have a clean foundation with auth, data access, and platform integrations ready for your product.",
+    steps: {
+      readDocs: {
+        title: "Read the docs",
+        desc: "Open AGENTS.md and README.md to understand the template architecture.",
+        code: "AGENTS.md + README.md",
+      },
+      replacePage: {
+        title: "Replace this page",
+        desc: "Move your product UI into src/components and keep page.tsx thin.",
+        code: "src/app/page.tsx",
+      },
+      firstFeature: {
+        title: "Build your first feature",
+        desc: "Add API routes under src/app/api and call them from typed helpers.",
+        code: "src/app/api/*",
+      },
+      translations: {
+        title: "Add translations",
+        desc: "Edit en-US / zh-CN strings in src/i18n/locales. LanguageSwitcher and I18nProvider in layout.tsx are already wired.",
+        code: "src/i18n/locales/",
+      },
+    },
+    nextCommand: {
+      title: "Next command",
+      desc: "Start developing and iterate in real time.",
+      command: "bun dev",
+    },
+  },
 } as const;
 
 const CLEAN_LOCALE_ZH = {
@@ -214,11 +247,58 @@ const CLEAN_LOCALE_ZH = {
     enUS: "English",
     zhCN: "中文",
   },
+  starter: {
+    badge: "Eazo 应用模板",
+    title: "用 Eazo 构建你的下一个应用",
+    subtitle:
+      "演示代码已移除。你现在拥有干净的基础：认证、数据访问与平台能力已就绪，可直接开发产品功能。",
+    steps: {
+      readDocs: {
+        title: "阅读文档",
+        desc: "打开 AGENTS.md 与 README.md，了解模板架构与约定。",
+        code: "AGENTS.md + README.md",
+      },
+      replacePage: {
+        title: "替换本页",
+        desc: "将产品 UI 放到 src/components 下，并保持 page.tsx 为薄入口。",
+        code: "src/app/page.tsx",
+      },
+      firstFeature: {
+        title: "开发第一个功能",
+        desc: "在 src/app/api 添加接口，并通过 src/lib/api 中的类型化 helper 调用。",
+        code: "src/app/api/*",
+      },
+      translations: {
+        title: "补充翻译",
+        desc: "在 src/i18n/locales 编辑中英文文案；layout 已接入 LanguageSwitcher 与 I18nProvider。",
+        code: "src/i18n/locales/",
+      },
+    },
+    nextCommand: {
+      title: "下一步命令",
+      desc: "启动开发服务器，实时迭代你的产品。",
+      command: "bun dev",
+    },
+  },
 } as const;
 
-const fileRewrites: Array<{ relPath: string; contents: string }> = [
+const fileRewrites: Array<{
+  relPath: string;
+  contents: string;
+  createIfMissing?: boolean;
+}> = [
   { relPath: "src/lib/mcp/server.ts", contents: CLEAN_MCP_SERVER },
   { relPath: "src/app/page.tsx", contents: CLEAN_HOME_PAGE },
+  {
+    relPath: "src/components/home/home-page.tsx",
+    contents: CLEAN_HOME_PAGE_COMPONENT,
+    createIfMissing: true,
+  },
+  {
+    relPath: "src/components/home/index.tsx",
+    contents: CLEAN_HOME_INDEX,
+    createIfMissing: true,
+  },
   {
     relPath: "src/app/api/notifications/test/route.ts",
     contents: CLEAN_NOTIFICATIONS_TEST_ROUTE,
@@ -271,10 +351,24 @@ function cleanupTodosExport(relPath: string) {
   }
 }
 
-function rewriteFile({ relPath, contents }: { relPath: string; contents: string }) {
+function rewriteFile({
+  relPath,
+  contents,
+  createIfMissing = false,
+}: {
+  relPath: string;
+  contents: string;
+  createIfMissing?: boolean;
+}) {
   const absPath = resolveFromRoot(relPath);
   if (!existsSync(absPath)) {
-    console.log(`- skip rewrite (not found): ${relPath}`);
+    if (!createIfMissing) {
+      console.log(`- skip rewrite (not found): ${relPath}`);
+      return;
+    }
+    mkdirSync(path.dirname(absPath), { recursive: true });
+    writeFileSync(absPath, contents, "utf8");
+    console.log(`- created: ${relPath}`);
     return;
   }
 
