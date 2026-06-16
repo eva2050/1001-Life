@@ -26,7 +26,7 @@ This repository is a Bun-first, minimal Next.js starter for building apps that r
    - **Memory** — `src/components/todo-list/index.tsx` (fire-and-forget `memory.reportAction()` pattern after each mutation)
    - **Notifications** — `src/components/notifications/notifications-toggle.tsx`, `src/app/api/notifications/test/route.ts`, `src/app/api/notifications/cron/daily-digest/route.ts`, `vercel.json#crons`
 4. Run `bun run cleanup:demo` before any feature development to remove all template demo artifacts.
-5. Update app metadata in `src/app/layout.tsx` and `metadata.*` keys in `src/i18n/locales/*.json`.
+5. The app title/description come from `NEXT_PUBLIC_APP_TITLE` / `NEXT_PUBLIC_APP_DESCRIPTION` in `.env` (stamped by the platform at scaffold time) and are consumed by `src/app/layout.tsx`. Do NOT hardcode the title in `layout.tsx`. To change the user-facing app name, update those `.env` values.
 6. Replace the default content in `src/app/page.tsx`.
 7. Add product-specific routes, components, and data logic from there.
 
@@ -756,6 +756,8 @@ src/app/api/mcp/
 | `DATABASE_URL` | If using DB | `postgresql://USER:PASS@HOST:PORT/DATABASE` |
 | `CRON_SECRET` | If you ship the daily-digest cron | Shared secret Vercel Cron sends as `Authorization: Bearer …` when firing scheduled invocations. |
 | `EAZO_PLATFORM_API_BASE` | Optional | Override the Eazo platform base URL (defaults to `https://eazo.ai`). |
+| `NEXT_PUBLIC_APP_TITLE` | Optional | Product title used as the app's `<title>` / OG title in `layout.tsx`. The platform stamps this at scaffold time; falls back to `"Eazo App"` when unset. |
+| `NEXT_PUBLIC_APP_DESCRIPTION` | Optional | Product description used as the app's meta description in `layout.tsx`. Falls back to `"An app build by eazo.ai"` when unset. |
 | `NEXT_PUBLIC_GENAUTH_APP_ID` | Optional | Override GenAuth App ID default. |
 | `NEXT_PUBLIC_GENAUTH_APP_DOMAIN` | Optional | Override GenAuth tenant domain default. |
 

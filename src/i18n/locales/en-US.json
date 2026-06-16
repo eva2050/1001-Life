@@ -1,8 +1,4 @@
 {
-  "metadata": {
-    "title": "Eazo Developer Home",
-    "description": "Developer onboarding, secure session flow, and backend verification examples."
-  },
   "common": {
     "signIn": "Sign in",
     "signOut": "Sign out",

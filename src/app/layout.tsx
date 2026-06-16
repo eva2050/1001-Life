@@ -15,9 +15,13 @@ const SITE_URL = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : undefined;
 
-const SITE_TITLE = "Eazo Developer Home";
+// The platform stamps the real product title/description into .env at scaffold
+// time (NEXT_PUBLIC_APP_TITLE / NEXT_PUBLIC_APP_DESCRIPTION). These drive the
+// app's <title> / meta description. Fall back to a generic default when unset
+// (e.g. local dev before any scaffold values are written).
+const SITE_TITLE = process.env.NEXT_PUBLIC_APP_TITLE?.trim() || "Eazo App";
 const SITE_DESCRIPTION =
-  "Developer onboarding, secure session flow, and backend verification examples.";
+  process.env.NEXT_PUBLIC_APP_DESCRIPTION?.trim() || "An app build by eazo.ai";
 
 export const metadata: Metadata = {
   ...(SITE_URL ? { metadataBase: new URL(SITE_URL) } : {}),

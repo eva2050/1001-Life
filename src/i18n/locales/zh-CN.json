@@ -1,8 +1,4 @@
 {
-  "metadata": {
-    "title": "Eazo 开发者主页",
-    "description": "开发者入门、安全会话流程与后端校验示例。"
-  },
   "common": {
     "signIn": "登录",
     "signOut": "退出登录",

@@ -161,10 +161,6 @@ export async function POST(request: NextRequest) {
 `;
 
 const CLEAN_LOCALE_EN = {
-  metadata: {
-    title: "Eazo App",
-    description: "Built with the Eazo Next.js template.",
-  },
   common: {
     signIn: "Sign in",
     signOut: "Sign out",
@@ -238,10 +234,6 @@ const CLEAN_LOCALE_EN = {
 } as const;
 
 const CLEAN_LOCALE_ZH = {
-  metadata: {
-    title: "Eazo 应用",
-    description: "基于 Eazo Next.js 模板构建。",
-  },
   common: {
     signIn: "登录",
     signOut: "退出登录",
@@ -342,6 +334,7 @@ const fileRewrites: Array<{
     contents: `${JSON.stringify(CLEAN_LOCALE_ZH, null, 2)}\n`,
   },
 ];
+
 
 function resolveFromRoot(relPath: string): string {
   return path.join(ROOT, relPath);
