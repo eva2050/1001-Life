@@ -5,11 +5,27 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Design token colors */
+  --color-primary: #C96A4B;
+  --color-secondary: #3B5F65;
+  --color-accent-bg: #F5F1E8;
+  --color-border-token: #C96A4B;
+  --color-text-primary: #2F2B27;
+  --color-text-secondary: #4E423E;
+  --color-text-muted: #8A7E72;
+  --color-state-success: #3B5F65;
+  --color-state-warning: #D69E2E;
+  --color-state-error: #C96A4B;
+
+  /* Font families */
+  --font-heading: var(--font-noto-serif-sc);
+  --font-body: var(--font-noto-sans-sc);
+  --font-sans: var(--font-noto-sans-sc);
+
+  /* shadcn compatibility mappings */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -39,109 +55,106 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-}
-
-body {
-  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-  /* Kill the ~300ms synthetic click delay on touch devices. */
-  touch-action: manipulation;
-}
-
-/* Prevent iOS WKWebView focus auto-zoom on form controls below the sm breakpoint.
- * `!important` is required: Tailwind utility classes (text-sm, text-[15px]) outrank
- * type selectors on specificity, and `@media` doesn't change that. */
-@media (max-width: 640px) {
-  input,
-  textarea,
-  select {
-    font-size: 16px !important;
-  }
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
+  /* Design token runtime vars */
+  --color-primary: #C96A4B;
+  --color-secondary-brand: #3B5F65;
+  --color-accent-bg: #F5F1E8;
+  --color-border-token: #C96A4B;
+  --color-text-primary: #2F2B27;
+  --color-text-secondary: #4E423E;
+  --color-text-muted: #8A7E72;
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Motion tokens */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* shadcn/ui light theme */
+  --background: #F5F1E8;
+  --foreground: #2F2B27;
+  --card: #FFFDF7;
+  --card-foreground: #2F2B27;
+  --popover: #FFFDF7;
+  --popover-foreground: #2F2B27;
+  --primary: #C96A4B;
+  --primary-foreground: #FFFDF7;
+  --secondary: #EDE8DC;
+  --secondary-foreground: #4E423E;
+  --muted: #EDE8DC;
+  --muted-foreground: #8A7E72;
+  --accent: #EDE8DC;
+  --accent-foreground: #4E423E;
+  --destructive: #C96A4B;
+  --border: #D9D0C0;
+  --input: #D9D0C0;
+  --ring: #C96A4B;
+  --radius: 0.5rem;
+  --chart-1: #C96A4B;
+  --chart-2: #3B5F65;
+  --chart-3: #D69E2E;
+  --chart-4: #8A7E72;
+  --chart-5: #4E423E;
+  --sidebar: #F0EBE0;
+  --sidebar-foreground: #2F2B27;
+  --sidebar-primary: #C96A4B;
+  --sidebar-primary-foreground: #FFFDF7;
+  --sidebar-accent: #EDE8DC;
+  --sidebar-accent-foreground: #4E423E;
+  --sidebar-border: #D9D0C0;
+  --sidebar-ring: #C96A4B;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body), "Noto Sans SC", sans-serif;
   }
   html {
     @apply font-sans;
   }
+}
+
+/* Folk-art texture overlay */
+.folk-texture {
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C96A4B' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Collage border effect */
+.collage-card {
+  position: relative;
+}
+.collage-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #C96A4B;
+  border-radius: inherit;
+  opacity: 0.6;
+  transform: rotate(-0.5deg);
+  pointer-events: none;
+}
+.collage-card::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 1px dashed #C96A4B;
+  border-radius: inherit;
+  opacity: 0.3;
+  transform: rotate(0.8deg);
+  pointer-events: none;
 }

@@ -20,83 +20,101 @@
     "enUS": "English",
     "zhCN": "中文"
   },
-  "todo": {
-    "title": "待办清单",
-    "signInTitle": "登录后查看你的待办",
-    "signInSubtitle": "你的任务正在等你",
-    "completedProgress": "已完成 {{done}} / {{total}}",
-    "analyzeAi": "用 AI 分析",
-    "aiLabel": "AI",
-    "empty": "还没有待办，在上方添加一条吧！",
-    "addPlaceholder": "添加新待办…",
-    "markComplete": "标记为已完成",
-    "markIncomplete": "标记为未完成",
-    "attachImage": "添加图片",
-    "shareToEazo": "分享到 Eazo",
-    "removeAttachment": "移除附件",
-    "attachmentAlt": "附件",
-    "uploading": "上传中…",
-    "shareWorkingOn": "进行中：{{title}}",
-    "shareJustFinished": "刚完成：{{title}}",
-    "shareAttachmentCaption": "待办附件",
-    "shareOpenedInEazo": "已在 Eazo 中打开",
-    "shareFailed": "分享失败",
-    "stickyAllDone": "全部 {{total}} 项已完成，干得漂亮",
-    "stickyRemaining": "还剩 {{count}} 项",
-    "stickyDoneOf": "已完成 {{done}} / {{total}}",
-    "clearCompleted": "清除已完成",
-    "errors": {
-      "load": "加载待办失败",
-      "add": "添加待办失败",
-      "update": "更新待办失败",
-      "rename": "重命名失败",
-      "delete": "删除待办失败",
-      "attach": "添加图片失败",
-      "removeAttachment": "移除附件失败",
-      "clearAll": "清除已完成项失败",
-      "clearPartial": "已清除 {{cleared}} / {{total}} 项，正在重新加载"
-    },
-    "success": {
-      "imageAttached": "图片已添加"
-    }
-  },
-  "ai": {
-    "title": "AI 分析",
-    "analyzing": "正在分析你的待办…",
-    "analyzeFailed": "分析待办失败",
-    "requestFailed": "请求失败",
-    "noResponseBody": "无响应内容"
-  },
   "errors": {
     "notFound": {
       "code": "404",
-      "title": "页面未找到",
-      "description": "你访问的页面不存在，或已被移动。",
-      "backHome": "返回首页"
-    },
-    "generic": {
-      "title": "出了点问题",
-      "description": "发生了意外错误。你可以重试，或返回首页继续。",
-      "tryAgain": "重试",
-      "backHome": "返回首页"
+      "title": "页面不存在",
+      "description": "你访问的页面不存在。"
     }
   },
-  "notifications": {
-    "title": "推送通知",
-    "webHint": "在 Eazo 移动应用中打开本应用以接收系统推送。",
-    "loading": "加载中…",
-    "subscribed": "已开启 — 你将收到来自本应用的系统推送。",
-    "unsubscribed": "已关闭 — 开启后可接收系统推送。",
-    "webOnlyToast": "通知仅在 Eazo 移动应用中送达。",
-    "subscribedToast": "已订阅 — 你将收到系统通知。",
-    "unsubscribedToast": "已取消订阅。",
-    "toggleFailed": "无法更新订阅，请重试。",
-    "sessionNotReady": "会话尚未就绪 — 请重新登录后再试。",
-    "testFailed": "测试失败：{{message}}",
-    "testFailedGeneric": "测试失败。",
-    "sent": "已发送！已送达 {{count}} 位订阅者。",
-    "noSubscribers": "尚无订阅者 — 请先开启上方通知后再试。",
-    "sendTest": "发送测试通知",
-    "sending": "发送中…"
+  "home": {
+    "brand": {
+      "stamp": "轉世",
+      "name": "1001种人生",
+      "subtitle": "人间荒诞观测所 v1.2"
+    },
+    "hero": {
+      "badge": "无痛离世 · 准备投胎"
+    },
+    "title": {
+      "line1": "你下辈子，",
+      "highlight": "会是谁？"
+    },
+    "description": "如果你不是人，你会是什么？1001种人生，每一种都活得比你想的更有故事。",
+    "btn": {
+      "start": "开启转世仪式"
+    },
+    "meta": {
+      "count": "已超 12,482 位生灵完成投胎",
+      "archive": "查看众生图鉴"
+    }
+  },
+  "quiz": {
+    "progress": "第 {{current}} 题，共 {{total}} 题",
+    "back": "返回",
+    "next": "下一题",
+    "questions": {
+      "q1": {
+        "title": "你的手机快没电了，你会：",
+        "options": {
+          "a": "慌乱向陌生人借充电器",
+          "b": "假装没事，随缘",
+          "c": "直接关机，享受宁静",
+          "d": "在心里骂自己为什么没充电"
+        }
+      },
+      "q2": {
+        "title": "凌晨三点，你还没睡，因为：",
+        "options": {
+          "a": "一边刷剧一边点外卖",
+          "b": "躺在床上盯着天花板发呆",
+          "c": "在刷不知道第几遍的社交媒体",
+          "d": "在脑子里写辞职信"
+        }
+      },
+      "q3": {
+        "title": "开了一个无聊透顶的会议，你：",
+        "options": {
+          "a": "点头如捣蒜，同时悄悄网购",
+          "b": "认真记笔记，万一要考试呢",
+          "c": "脑子里规划下一顿吃什么",
+          "d": "思考能不能从窗口逃跑"
+        }
+      },
+      "q4": {
+        "title": "电梯来了，但已经满了，你会：",
+        "options": {
+          "a": "硬挤进去",
+          "b": "礼貌等下一班",
+          "c": "爬楼梯，惩罚自己",
+          "d": "回工位，算了"
+        }
+      },
+      "q5": {
+        "title": "周六完全空着，你的第一反应是：",
+        "options": {
+          "a": "睡到中午再开始后悔",
+          "b": "制定超级充实的计划，完成10%",
+          "c": "随便走到哪里算哪里",
+          "d": "躺着刷手机，称之为'休息'"
+        }
+      }
+    }
+  },
+  "result": {
+    "title": "你的转世身份",
+    "subtitle": "观测所已为你计算出：",
+    "share": "分享我的宿命",
+    "again": "再测一次",
+    "archive": "查看众生图鉴",
+    "confidence": "命中率",
+    "tags": "关键词"
+  },
+  "archive": {
+    "title": "众生图鉴",
+    "subtitle": "所有曾经转世的灵魂",
+    "empty": "还没有记录，成为第一个投胎的人！",
+    "yours": "你",
+    "ago": "{{time}}前"
   }
 }

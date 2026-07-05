@@ -20,83 +20,101 @@
     "enUS": "English",
     "zhCN": "中文"
   },
-  "todo": {
-    "title": "Todo List",
-    "signInTitle": "Sign in to view your todos",
-    "signInSubtitle": "Your tasks are waiting for you",
-    "completedProgress": "{{done}} of {{total}} completed",
-    "analyzeAi": "Analyze with AI",
-    "aiLabel": "AI",
-    "empty": "No todos yet. Add one above!",
-    "addPlaceholder": "Add a new todo…",
-    "markComplete": "Mark complete",
-    "markIncomplete": "Mark incomplete",
-    "attachImage": "Attach image",
-    "shareToEazo": "Share to Eazo",
-    "removeAttachment": "Remove attachment",
-    "attachmentAlt": "attachment",
-    "uploading": "Uploading…",
-    "shareWorkingOn": "Working on: {{title}}",
-    "shareJustFinished": "Just finished: {{title}}",
-    "shareAttachmentCaption": "todo attachment",
-    "shareOpenedInEazo": "Opened in Eazo",
-    "shareFailed": "Share failed",
-    "stickyAllDone": "All {{total}} done — nice work",
-    "stickyRemaining": "{{count}} remaining",
-    "stickyDoneOf": "{{done}} of {{total}} done",
-    "clearCompleted": "Clear completed",
-    "errors": {
-      "load": "Failed to load todos",
-      "add": "Failed to add todo",
-      "update": "Failed to update todo",
-      "rename": "Failed to rename todo",
-      "delete": "Failed to delete todo",
-      "attach": "Failed to attach image",
-      "removeAttachment": "Failed to remove attachment",
-      "clearAll": "Failed to clear completed todos",
-      "clearPartial": "Cleared {{cleared}} of {{total}}; reloading"
-    },
-    "success": {
-      "imageAttached": "Image attached"
-    }
-  },
-  "ai": {
-    "title": "AI Analysis",
-    "analyzing": "Analyzing your todos…",
-    "analyzeFailed": "Failed to analyze todos",
-    "requestFailed": "Request failed",
-    "noResponseBody": "No response body"
-  },
   "errors": {
     "notFound": {
       "code": "404",
-      "title": "Page not found",
-      "description": "The page you're looking for doesn't exist or may have been moved.",
-      "backHome": "Back to home"
-    },
-    "generic": {
-      "title": "Something went wrong",
-      "description": "An unexpected error occurred. You can try again or return to the home page.",
-      "tryAgain": "Try again",
-      "backHome": "Back to home"
+      "title": "Page Not Found",
+      "description": "The page you are looking for does not exist."
     }
   },
-  "notifications": {
-    "title": "Push notifications",
-    "webHint": "Open this app inside Eazo Mobile to receive system pushes.",
-    "loading": "Loading…",
-    "subscribed": "On — you'll receive system pushes from this app.",
-    "unsubscribed": "Off — turn on to receive system pushes.",
-    "webOnlyToast": "Notifications only deliver inside the Eazo mobile app.",
-    "subscribedToast": "Subscribed — you'll receive system notifications.",
-    "unsubscribedToast": "Unsubscribed.",
-    "toggleFailed": "Couldn't update subscription. Try again.",
-    "sessionNotReady": "Session not ready yet — please sign in again and retry.",
-    "testFailed": "Test failed: {{message}}",
-    "testFailedGeneric": "Test failed.",
-    "sent": "Sent! Delivered to {{count}} subscribers.",
-    "noSubscribers": "No subscribers yet — turn on notifications above and try again.",
-    "sendTest": "Send test notification",
-    "sending": "Sending…"
+  "home": {
+    "brand": {
+      "stamp": "轉世",
+      "name": "1001 Lives",
+      "subtitle": "Bureau of Absurdity v1.2"
+    },
+    "hero": {
+      "badge": "Painless Departure · Ready to Reincarnate"
+    },
+    "title": {
+      "line1": "Who will you be",
+      "highlight": "next life?"
+    },
+    "description": "If you weren't human, what would you be? 1001 lives — every one of them more surprising than you'd think.",
+    "btn": {
+      "start": "Begin the Ritual"
+    },
+    "meta": {
+      "count": "12,482+ souls reincarnated",
+      "archive": "View the Archive"
+    }
+  },
+  "quiz": {
+    "progress": "Question {{current}} of {{total}}",
+    "back": "Back",
+    "next": "Next",
+    "questions": {
+      "q1": {
+        "title": "Your phone is almost dead. You:",
+        "options": {
+          "a": "Panic and beg a stranger for a charger",
+          "b": "Pretend nothing happened, YOLO",
+          "c": "Power off and enjoy the freedom",
+          "d": "Immediately blame yourself for not charging"
+        }
+      },
+      "q2": {
+        "title": "3AM and you're still awake. What's happening?",
+        "options": {
+          "a": "Ordering food while watching a drama",
+          "b": "Lying in bed staring at the ceiling",
+          "c": "Doom-scrolling social media",
+          "d": "Writing a resignation letter in your head"
+        }
+      },
+      "q3": {
+        "title": "How do you handle a boring meeting?",
+        "options": {
+          "a": "Nod along while secretly online shopping",
+          "b": "Take notes — what if there's a quiz later?",
+          "c": "Mentally planning your next meal",
+          "d": "Wondering if you can escape through the window"
+        }
+      },
+      "q4": {
+        "title": "The elevator arrives but it's full. You:",
+        "options": {
+          "a": "Squeeze in anyway",
+          "b": "Wait for the next one politely",
+          "c": "Take the stairs as punishment for yourself",
+          "d": "Go back to your desk — forget it"
+        }
+      },
+      "q5": {
+        "title": "You have a free Saturday, your instinct is:",
+        "options": {
+          "a": "Sleep until noon then feel guilty",
+          "b": "Make a super productive plan and execute 10%",
+          "c": "Wander outside with no destination",
+          "d": "Lie in bed scrolling your phone and call it self-care"
+        }
+      }
+    }
+  },
+  "result": {
+    "title": "Your Reincarnation Identity",
+    "subtitle": "The Bureau has calculated your next life:",
+    "share": "Share My Destiny",
+    "again": "Try Again",
+    "archive": "View the Archive",
+    "confidence": "Confidence",
+    "tags": "Traits"
+  },
+  "archive": {
+    "title": "Archive of Souls",
+    "subtitle": "All the lives that have passed through",
+    "empty": "No records yet. Be the first to reincarnate!",
+    "yours": "You",
+    "ago": "{{time}} ago"
   }
 }
