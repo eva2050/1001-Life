@@ -1,12 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Noto_Serif_SC, Noto_Sans_SC } from "next/font/google";
-import { EazoProvider } from "@eazo/sdk/react";
 import { cn } from "@/utils/utils";
 import { Toaster } from "@/components/ui/sonner";
-import { UserSyncEffect } from "@/components/user-profile/user-sync-effect";
 import { I18nProvider } from "@/components/i18n/i18n-provider";
-import { LocaleSyncEffect } from "@/components/i18n/locale-sync-effect";
 import { getServerLocale } from "@/lib/i18n/server-preference";
 
 const notoSerifSC = Noto_Serif_SC({
@@ -62,12 +59,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <body className="min-h-svh flex flex-col bg-[#F5F1E8] font-body">
         <I18nProvider>
-          <EazoProvider>
-            <LocaleSyncEffect />
-            <UserSyncEffect />
-            {children}
-            <Toaster />
-          </EazoProvider>
+          {children}
+          <Toaster />
         </I18nProvider>
       </body>
     </html>
